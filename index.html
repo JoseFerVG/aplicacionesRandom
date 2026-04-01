@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Apps Random — Jose Fernando</title>
+<meta name="description" content="Colección de mini-aplicaciones web creadas por Jose Fernando. Herramientas útiles, calculadoras y experimentos."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════ */
+:root {
+  /* Surface — warm cream palette */
+  --bg: #faf9f6;
+  --bg-alt: #f3f1ed;
+  --surface: #ffffff;
+  --surface-hover: #fdfcfa;
+  --surface-raised: #ffffff;
+
+  /* Text */
+  --ink: #1a1a1a;
+  --ink-secondary: #6b6b6b;
+  --ink-tertiary: #a0a0a0;
+  --ink-faint: #d0cec8;
+
+  /* Accent — soft muted violet */
+  --accent: #7c6cf0;
+  --accent-soft: rgba(124, 108, 240, 0.08);
+  --accent-medium: rgba(124, 108, 240, 0.14);
+
+  /* Borders */
+  --border: rgba(0, 0, 0, 0.06);
+  --border-hover: rgba(0, 0, 0, 0.12);
+
+  /* Radius */
+  --r-sm: 12px;
+  --r-md: 20px;
+  --r-lg: 28px;
+  --r-xl: 36px;
+  --r-full: 999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-card-hover: 0 20px 60px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.05);
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Fonts */
+  --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --display: 'Outfit', system-ui, sans-serif;
+}
+
+/* ═══════════ RESET ═══════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+a { text-decoration: none; color: inherit; }
+
+/* ═══════════ LAYOUT ═══════════ */
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ═══════════ NAV ═══════════ */
+.nav {
+  position: sticky;
+  top: 0; z-index: 50;
+  background: rgba(250, 249, 246, 0.82);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.nav-logo {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: var(--ink);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  transition: transform 0.3s var(--spring);
+}
+.nav-logo:hover { transform: rotate(-8deg) scale(1.05); }
+.nav-right {
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-pill {
+  padding: 5px 14px;
+  border-radius: var(--r-full);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+  border: none; background: none;
+  font-family: var(--font);
+}
+.nav-pill:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.nav-pill.active {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* ═══════════ HERO ═══════════ */
+.hero {
+  padding: 6rem 0 4rem;
+  text-align: center;
+}
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.hero-tag .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.7;
+}
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+.hero-desc {
+  font-size: 1.1rem;
+  color: var(--ink-secondary);
+  max-width: 480px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.7;
+  font-weight: 400;
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: var(--r-full);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  border: none;
+  transition: all 0.25s var(--ease);
+}
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.btn-primary:hover {
+  background: #333;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--ink-secondary);
+  border: 1px solid var(--border-hover);
+}
+.btn-secondary:hover {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+}
+.btn .arrow {
+  transition: transform 0.25s var(--ease);
+  font-size: 1rem;
+}
+.btn:hover .arrow { transform: translateX(3px); }
+
+/* ═══════════ DIVIDER ═══════════ */
+.divider {
+  width: 48px;
+  height: 1px;
+  background: var(--ink-faint);
+  margin: 0 auto 3rem;
+}
+
+/* ═══════════ APPS SECTION ═══════════ */
+.section {
+  padding: 0 0 6rem;
+}
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  margin-bottom: 2rem;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ═══════════ APP CARDS — BENTO GRID ═══════════ */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.app-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  transition: all 0.35s var(--ease);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.app-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px);
+}
+
+/* Featured card — spans full width */
+.app-card.featured {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  min-height: 320px;
+}
+.app-card.featured .card-visual {
+  flex: 0 0 45%;
+  min-height: 100%;
+}
+.app-card.featured .card-content {
+  flex: 1;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Card visual / preview area */
+.card-visual {
+  position: relative;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.card-visual-bg {
+  position: absolute; inset: 0;
+  transition: transform 0.5s var(--ease);
+}
+.app-card:hover .card-visual-bg {
+  transform: scale(1.04);
+}
+.card-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 4rem;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
+  transition: transform 0.4s var(--spring);
+}
+.app-card:hover .card-icon {
+  transform: scale(1.1) rotate(-3deg);
+}
+.app-card.featured .card-icon {
+  font-size: 5.5rem;
+}
+
+/* Card content */
+.card-content {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.badge-tool {
+  background: rgba(52, 168, 83, 0.08);
+  color: #2d8a4e;
+}
+.badge-game {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.badge-util {
+  background: rgba(234, 134, 45, 0.08);
+  color: #c4702a;
+}
+.card-title {
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+}
+.app-card.featured .card-title {
+  font-size: 1.7rem;
+}
+.card-desc {
+  font-size: 0.88rem;
+  color: var(--ink-secondary);
+  line-height: 1.6;
+  flex: 1;
+  margin-bottom: 1.25rem;
+}
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 1rem;
+}
+.tag {
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  background: var(--bg-alt);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  transition: background 0.2s, color 0.2s;
+}
+.app-card:hover .tag {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  transition: color 0.2s, gap 0.25s var(--ease);
+}
+.app-card:hover .card-cta {
+  color: var(--accent);
+  gap: 10px;
+}
+
+/* ═══════════ PLACEHOLDER CARDS ═══════════ */
+.app-card.placeholder {
+  border-style: dashed;
+  cursor: default;
+}
+.app-card.placeholder:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.placeholder-badge {
+  position: absolute;
+  top: 12px; right: 12px; z-index: 2;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  background: var(--bg-alt);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+}
+.app-card.placeholder .card-icon {
+  opacity: 0.25;
+  filter: grayscale(1) drop-shadow(0 4px 12px rgba(0,0,0,0.05));
+}
+.app-card.placeholder .card-content {
+  opacity: 0.4;
+}
+
+/* ═══════════ FOOTER ═══════════ */
+.footer {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.footer-brand {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--ink-secondary);
+}
+.footer-note {
+  font-size: 0.75rem;
+  color: var(--ink-tertiary);
+  line-height: 1.6;
+}
+.footer-note a {
+  color: var(--ink-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--ink-faint);
+  transition: color 0.2s, text-decoration-color 0.2s;
+}
+.footer-note a:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+.footer-ethics {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 0.68rem;
+  color: var(--ink-tertiary);
+  letter-spacing: 0.02em;
+}
+.footer-ethics .check {
+  color: #2d8a4e;
+}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width: 768px) {
+  .hero { padding: 4rem 0 3rem; }
+  .hero h1 { font-size: 2.2rem; }
+  .hero-desc { font-size: 1rem; }
+  .hero-actions { flex-direction: column; width: 100%; }
+  .btn { width: 100%; justify-content: center; }
+  .bento { grid-template-columns: 1fr; }
+  .app-card.featured {
+    flex-direction: column;
+    min-height: auto;
+  }
+  .app-card.featured .card-visual {
+    flex: 0 0 auto;
+    height: 200px;
+    min-height: auto;
+  }
+  .app-card.featured .card-content {
+    padding: 1.5rem;
+  }
+  .app-card.featured .card-title {
+    font-size: 1.3rem;
+  }
+  .app-card.featured .card-icon {
+    font-size: 4rem;
+  }
+  .nav-right { display: none; }
+}
+
+/* ═══════════ ANIMATIONS ═══════════ */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.6s var(--ease) forwards;
+}
+.fade-in:nth-child(1) { animation-delay: 0s; }
+.fade-in:nth-child(2) { animation-delay: 0.08s; }
+.fade-in:nth-child(3) { animation-delay: 0.16s; }
+.fade-in:nth-child(4) { animation-delay: 0.24s; }
+
+@keyframes fadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════ SCROLLBAR ═══════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--ink-faint); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-tertiary); }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav" aria-label="Navegación principal">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand" aria-label="Inicio">
+      <div class="nav-logo" aria-hidden="true">⚡</div>
+      Apps Random
+    </a>
+    <div class="nav-right">
+      <a href="#apps" class="nav-pill active">Apps</a>
+      <a href="#footer" class="nav-pill">Contacto</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<main>
+  <section class="hero container" id="top">
+    <div class="hero-tag fade-in">
+      <span class="dot" aria-hidden="true"></span>
+      Colección abierta
+    </div>
+    <h1 class="fade-in">
+      Mini-apps<br/><em>random</em> de Jose Fernando
+    </h1>
+    <p class="hero-desc fade-in">
+      Herramientas útiles, calculadoras y experimentos web.
+      Cada una hecha con cariño y sin trucos — solo código limpio.
+    </p>
+    <div class="hero-actions fade-in">
+      <a href="#apps" class="btn btn-primary">
+        Ver aplicaciones
+        <span class="arrow" aria-hidden="true">↓</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider" aria-hidden="true"></div></div>
+
+  <!-- Apps -->
+  <section class="section container" id="apps">
+    <div class="section-label">
+      Aplicaciones
+    </div>
+
+    <div class="bento">
+
+      <!-- ★ FEATURED: Sushi Calculator -->
+      <a href="./calculadoraChuchi/index.html" class="app-card featured reveal" id="card-sushi" aria-label="Abrir Calculadora Buffet Sushi">
+        <div class="card-visual">
+          <div class="card-visual-bg" style="background: linear-gradient(145deg, #fff5f5 0%, #fff0e6 50%, #faf5ff 100%);"></div>
+          <span class="card-icon" aria-hidden="true">🍣</span>
+        </div>
+        <div class="card-content">
+          <span class="card-badge badge-tool">🧮 Calculadora</span>
+          <h2 class="card-title">Calculadora Buffet Sushi</h2>
+          <p class="card-desc">
+            ¿Cuánto le cuesta al restaurante tu visita al buffet?
+            Marca cada pieza que consumes y descubre el coste real
+            de materia prima vs. lo que pagas. Con precios de Murcia.
+          </p>
+          <div class="card-tags">
+            <span class="tag">Sushi</span>
+            <span class="tag">Buffet</span>
+            <span class="tag">Murcia</span>
+            <span class="tag">Costes</span>
+          </div>
+          <span class="card-cta">
+            Abrir aplicación
+            <span class="arrow" aria-hidden="true">→</span>
+          </span>
+        </div>
+      </a>
+
+      <!-- Placeholder 1 -->
+      <div class="app-card placeholder reveal" aria-label="Próximamente">
+        <span class="placeholder-badge">Próximamente</span>
+        <div class="card-visual">
+          <div class="card-visual-bg" style="background: linear-gradient(145deg, #f5f5ff 0%, #f0f7ff 100%);"></div>
+          <span class="card-icon" aria-hidden="true">🎯</span>
+        </div>
+        <div class="card-content">
+          <span class="card-badge badge-game">🎮 Juego</span>
+          <h3 class="card-title">En desarrollo</h3>
+          <p class="card-desc">
+            Una nueva app está en camino. ¿Tienes alguna idea? Cuéntamela.
+          </p>
+          <div class="card-tags"><span class="tag">???</span></div>
+        </div>
+      </div>
+
+      <!-- Placeholder 2 -->
+      <div class="app-card placeholder reveal" aria-label="Próximamente">
+        <span class="placeholder-badge">Próximamente</span>
+        <div class="card-visual">
+          <div class="card-visual-bg" style="background: linear-gradient(145deg, #f5fff5 0%, #fafff0 100%);"></div>
+          <span class="card-icon" aria-hidden="true">🔮</span>
+        </div>
+        <div class="card-content">
+          <span class="card-badge badge-util">🛠 Utilidad</span>
+          <h3 class="card-title">En construcción</h3>
+          <p class="card-desc">
+            Otra idea random que cobrará vida. Paciencia.
+          </p>
+          <div class="card-tags"><span class="tag">???</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer" id="footer">
+  <div class="container footer-inner">
+    <span class="footer-brand">Apps Random — Jose Fernando</span>
+    <p class="footer-note">
+      Hecho con café y código en Murcia, España.<br/>
+      © 2026 · Código abierto y sin rastreadores.
+    </p>
+    <span class="footer-ethics">
+      <span class="check" aria-hidden="true">✓</span>
+      Sin cookies · Sin tracking · Sin dark patterns
+    </span>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+/* ═══ Scroll Reveal ═══ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ═══ Smooth anchor ═══ */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+</script>
+</body>
+</html>
