@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>🍣 Coste buffet sushi — Calculadora para restaurantes</title>
+<meta name="description" content="Calcula cuánto le cuesta al restaurante tu visita al buffet de sushi en Murcia."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg0:#06060f;--bg1:#0b0b18;--bg2:#10101f;--bg3:#161626;
+  --card:#131322;--card-h:#1a1a2e;
+  --brd:rgba(255,255,255,.07);--brd-h:rgba(255,255,255,.13);
+  --red:hsl(354,82%,60%);--red-dk:hsl(354,82%,42%);--red-gl:hsla(354,82%,60%,.28);
+  --gold:hsl(36,94%,62%);--gold-gl:hsla(36,94%,62%,.22);
+  --green:hsl(158,60%,50%);--green-gl:hsla(158,60%,50%,.18);
+  --amber:hsl(40,90%,58%);
+  --txt:#eeeef8;--muted:#7878a0;--faint:#3a3a5a;
+  --r:12px;--rf:999px;
+  --tr:.2s ease;--tr-spring:cubic-bezier(.34,1.56,.64,1);
+  --font:'Inter',system-ui,sans-serif;
+  --serif:'Noto Serif JP',serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg0);color:var(--txt);min-height:100vh;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input{font-family:inherit}
+/* BG */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 55% at 10% 0%,hsla(354,82%,55%,.11) 0%,transparent 65%),
+  radial-gradient(ellipse 50% 40% at 90% 90%,hsla(36,94%,55%,.08) 0%,transparent 60%),
+  radial-gradient(ellipse 80% 60% at 50% 50%,hsla(240,60%,40%,.05) 0%,transparent 70%);
+  animation:breathe 9s ease-in-out infinite alternate}
+.bg::after{content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:32px 32px}
+@keyframes breathe{from{opacity:.7}to{opacity:1}}
+/* LAYOUT */
+.page{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:1.75rem 1.25rem 6rem;
+  display:grid;grid-template-columns:1fr 348px;gap:1.75rem;align-items:start}
+@media(max-width:960px){.page{grid-template-columns:1fr}}
+@media(max-width:600px){.page{padding:1rem .75rem 5rem}}
+/* HEADER */
+header{position:relative;z-index:1;overflow:hidden;text-align:center;
+  padding:3rem 1.5rem 2.25rem;
+  background:linear-gradient(170deg,hsl(240,22%,7%) 0%,hsl(350,22%,8%) 50%,hsl(240,22%,7%) 100%);
+  border-bottom:1px solid var(--brd)}
+header::before{content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ef4565' fill-opacity='0.04'%3E%3Cpath d='M26 26v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 6V2H4v4H0v2h4v4h2V8h4V6H6z'/%3E%3C/g%3E%3C/svg%3E")}
+.kanji{position:absolute;right:5%;top:50%;transform:translateY(-50%);
+  font-family:var(--serif);font-size:11rem;font-weight:900;
+  color:var(--txt);opacity:.025;pointer-events:none;user-select:none;line-height:1}
+.h-badge{display:inline-flex;align-items:center;gap:6px;
+  background:hsla(354,82%,60%,.1);border:1px solid hsla(354,82%,60%,.25);
+  color:var(--red);border-radius:var(--rf);padding:4px 16px;
+  font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem}
+header h1{font-family:var(--serif);font-size:clamp(1.9rem,5vw,3.1rem);
+  font-weight:900;line-height:1.18;
+  background:linear-gradient(140deg,#fff 0%,var(--gold) 50%,var(--red) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.6rem}
+header p{color:var(--muted);font-size:.9rem;max-width:480px;margin:0 auto}
+/* LABEL */
+.lbl{display:flex;align-items:center;gap:8px;font-size:.65rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem}
+.lbl::before{content:'';width:22px;height:2px;background:var(--red);border-radius:2px;flex-shrink:0}
+/* CONFIG */
+.cfg{background:var(--card);border:1px solid var(--brd);border-radius:16px;
+  padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-end}
+.cfg-blk{display:flex;flex-direction:column;gap:5px;flex:1;min-width:160px}
+.cfg-lbl{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.stepper{display:flex;align-items:center;gap:10px}
+.s-btn{width:38px;height:38px;border-radius:var(--rf);border:1px solid var(--brd-h);
+  background:var(--bg2);color:var(--txt);font-size:1.4rem;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:background var(--tr),border-color var(--tr),transform var(--tr)}
+.s-btn:hover{background:var(--red);border-color:var(--red);transform:scale(1.1)}
+.s-val{font-family:var(--serif);font-size:2rem;font-weight:900;min-width:40px;text-align:center;
+  background:linear-gradient(135deg,var(--txt),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.price-wrap{position:relative;display:flex;align-items:center;max-width:160px}
+.euro-sym{position:absolute;left:10px;color:var(--muted);font-size:.9rem;pointer-events:none}
+.price-inp{width:100%;padding:8px 10px 8px 26px;background:var(--bg2);border:1px solid var(--brd-h);
+  border-radius:10px;color:var(--txt);font-size:1rem;font-weight:600;outline:none;
+  -moz-appearance:textfield;appearance:textfield;transition:border-color var(--tr)}
+.price-inp::-webkit-outer-spin-button,.price-inp::-webkit-inner-spin-button{-webkit-appearance:none}
+.price-inp:focus{border-color:var(--red)}
+.cfg-note{font-size:.66rem;color:var(--faint);margin-top:1px}
+/* SEARCH */
+.srch{position:relative;margin-bottom:.9rem}
+.srch-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;pointer-events:none}
+.srch input{width:100%;padding:10px 12px 10px 36px;background:var(--card);
+  border:1px solid var(--brd);border-radius:10px;color:var(--txt);font-size:.87rem;outline:none;
+  transition:border-color var(--tr)}
+.srch input::placeholder{color:var(--faint)}
+.srch input:focus{border-color:var(--red)}
+/* TABS */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.1rem}
+.tab{border:1px solid var(--brd);background:transparent;color:var(--muted);
+  border-radius:var(--rf);padding:5px 14px;font-size:.78rem;font-weight:500;
+  transition:all var(--tr);user-select:none}
+.tab:hover{border-color:var(--red);color:var(--txt)}
+.tab.on{background:linear-gradient(135deg,var(--red),hsl(20,90%,52%));
+  border-color:transparent;color:#fff;box-shadow:0 4px 18px var(--red-gl)}
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:.9rem}
+.no-res{grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);font-size:.88rem}
+/* CARD */
+.card{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:.95rem;
+  cursor:pointer;user-select:none;position:relative;overflow:hidden;outline:none;
+  transition:border-color var(--tr),transform var(--tr),box-shadow var(--tr),background var(--tr)}
+.card::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,hsla(354,82%,60%,.06),transparent 60%);
+  opacity:0;transition:opacity var(--tr)}
+.card:hover{border-color:hsla(354,82%,60%,.4);transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.5);background:var(--card-h)}
+.card:hover::after{opacity:1}
+.card.sel{border-color:var(--red);background:hsla(354,82%,60%,.08);
+  box-shadow:0 0 0 1px var(--red),0 0 28px var(--red-gl)}
+.card.sel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--red),var(--gold))}
+.card.sel::after{opacity:1}
+.card.other{border-style:dashed}
+.other-badge{position:absolute;top:8px;right:8px;font-size:.56rem;font-weight:700;
+  letter-spacing:.1em;color:var(--muted);background:var(--bg2);
+  padding:2px 6px;border-radius:4px;text-transform:uppercase}
+.emoji{display:block;font-size:2.1rem;margin-bottom:.4rem;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.5));
+  transition:transform .35s var(--tr-spring)}
+.card:hover .emoji,.card.sel .emoji{transform:scale(1.2) rotate(-8deg)}
+.c-name{font-size:.84rem;font-weight:600;line-height:1.3;margin-bottom:1px}
+.c-sub{font-size:.68rem;color:var(--muted);line-height:1.3;margin-bottom:6px}
+.c-price{font-family:var(--mono);font-size:1.05rem;font-weight:700;
+  background:linear-gradient(135deg,var(--gold),hsl(20,90%,65%));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.c-unit{font-size:.65rem;color:var(--faint)}
+/* COUNTER */
+.counter{display:flex;align-items:center;gap:7px;margin-top:8px;position:relative;z-index:2}
+.c-btn{width:28px;height:28px;border-radius:var(--rf);border:1px solid var(--brd-h);
+  background:var(--bg2);color:var(--txt);font-size:1.1rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  transition:background var(--tr),border-color var(--tr),transform var(--tr)}
+.c-btn:hover{background:var(--red);border-color:var(--red);transform:scale(1.15)}
+.c-num{font-family:var(--mono);font-size:.95rem;font-weight:700;min-width:26px;text-align:center;
+  cursor:text;border-radius:6px;padding:1px 4px;transition:background var(--tr)}
+.c-num:hover{background:hsla(255,100%,100%,.07)}
+.c-num.zero{color:var(--faint)}
+.c-edit{font-family:var(--mono);font-size:.95rem;font-weight:700;width:40px;
+  background:hsla(255,100%,100%,.1);border:1px solid var(--red);border-radius:6px;
+  color:var(--txt);text-align:center;outline:none;padding:1px 0;
+  -moz-appearance:textfield;appearance:textfield}
+.c-edit::-webkit-outer-spin-button,.c-edit::-webkit-inner-spin-button{-webkit-appearance:none}
+.c-sub{font-size:.7rem;color:var(--green);font-weight:600;margin-top:3px;
+  position:relative;z-index:2;animation:pop .22s var(--tr-spring)}
+/* SIDEBAR */
+.sidebar{position:sticky;top:1.5rem}
+.receipt{background:linear-gradient(170deg,var(--card) 0%,var(--bg2) 100%);
+  border:1px solid var(--brd);border-radius:20px;padding:1.5rem;
+  box-shadow:0 24px 64px rgba(0,0,0,.6);position:relative;overflow:hidden}
+.receipt::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--red),var(--gold),var(--red));background-size:200%;
+  animation:slide-grad 4s linear infinite}
+@keyframes slide-grad{from{background-position:0%}to{background-position:200%}}
+.r-title{font-family:var(--serif);font-size:1rem;font-weight:700;
+  margin-bottom:1.2rem;display:flex;align-items:center;gap:8px}
+.r-lines{list-style:none;max-height:230px;overflow-y:auto;margin-bottom:.9rem;
+  scrollbar-width:thin;scrollbar-color:var(--brd) transparent}
+.r-lines::-webkit-scrollbar{width:3px}
+.r-lines::-webkit-scrollbar-thumb{background:var(--brd);border-radius:2px}
+.r-empty{display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:1.8rem 0;color:var(--muted);font-size:.82rem;text-align:center}
+.r-empty span:first-child{font-size:2rem}
+.r-line{display:flex;align-items:center;gap:5px;padding:5px 0;
+  border-bottom:1px solid hsla(240,20%,100%,.04);font-size:.8rem;
+  animation:slide-in .2s ease}
+.r-emo{flex-shrink:0;font-size:.85rem}
+.r-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt)}
+.r-qty{color:var(--muted);font-size:.72rem;white-space:nowrap}
+.r-amt{font-family:var(--mono);color:var(--gold);font-weight:600;white-space:nowrap;margin-left:auto;font-size:.8rem}
+.div{border:none;border-top:1px dashed var(--brd-h);margin:.85rem 0}
+.s-row{display:flex;justify-content:space-between;align-items:baseline;
+  font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.s-val{font-weight:600;color:var(--txt);font-family:var(--mono)}
+.g-great{color:var(--green)!important}.g-ok{color:var(--amber)!important}
+.g-warn{color:var(--gold)!important}.g-bad{color:var(--red)!important}
+.s-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px}
+.t-lbl{font-family:var(--serif);font-size:.9rem;font-weight:700}
+.t-amt{font-family:var(--mono);font-size:2.1rem;font-weight:700;
+  background:linear-gradient(135deg,var(--gold),var(--red));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  transition:all .3s ease}
+/* BAR */
+.bar-wrap{margin-top:1rem}
+.bar-top{display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted);margin-bottom:5px}
+.bar-track{height:6px;background:var(--bg0);border-radius:var(--rf);overflow:hidden}
+.bar-fill{height:100%;border-radius:var(--rf);transition:width .5s ease,background .5s ease;width:0}
+/* VERDICT */
+.verdict{margin-top:.85rem;border-radius:10px;padding:.7rem 1rem;
+  font-size:.8rem;font-weight:500;line-height:1.45;text-align:center;display:none}
+.verdict.on{display:block;animation:pop .35s var(--tr-spring)}
+.v-great{background:var(--green-gl);border:1px solid hsla(158,60%,50%,.3);color:var(--green)}
+.v-ok{background:hsla(40,90%,58%,.12);border:1px solid hsla(40,90%,58%,.3);color:var(--amber)}
+.v-warn{background:var(--gold-gl);border:1px solid hsla(36,94%,62%,.3);color:var(--gold)}
+.v-bad{background:hsla(354,82%,60%,.1);border:1px solid hsla(354,82%,60%,.3);color:var(--red)}
+/* BTN RESET */
+.btn-rst{width:100%;margin-top:.9rem;padding:.6rem;border-radius:10px;
+  border:1px solid var(--brd-h);background:transparent;color:var(--muted);
+  font-size:.78rem;font-weight:600;transition:all var(--tr)}
+.btn-rst:hover{border-color:var(--red);color:var(--red);background:hsla(354,82%,60%,.07)}
+.r-note{font-size:.66rem;color:var(--faint);margin-top:.5rem;text-align:center;line-height:1.4}
+/* SCROLL TOP */
+.scr-top{position:fixed;bottom:2rem;right:2rem;z-index:99;width:44px;height:44px;
+  border-radius:var(--rf);background:var(--red);color:#fff;font-size:1.2rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 22px var(--red-gl);opacity:0;transform:translateY(16px);
+  transition:opacity var(--tr),transform var(--tr);pointer-events:none}
+.scr-top.on{opacity:1;transform:translateY(0);pointer-events:auto}
+.scr-top:hover{background:var(--red-dk);transform:translateY(-2px) scale(1.06)}
+footer{position:relative;z-index:1;text-align:center;padding:1.3rem;
+  color:var(--faint);font-size:.73rem;border-top:1px solid var(--brd)}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes slide-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:580px){
+  .kanji{display:none}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:.7rem}
+  .t-amt{font-size:1.7rem}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+
+<header>
+  <div class="kanji" aria-hidden="true">寿司</div>
+  <div class="h-badge">🍣 Buffet Cost Tracker · Restaurante</div>
+  <h1>¿Cuánto le cuesta<br/>tu visita al restaurante?</h1>
+  <p>Marca cada pieza consumida. Calcula el coste real de materia prima que asume el restaurante.</p>
+</header>
+
+<main class="page">
+  <section>
+    <!-- CONFIG -->
+    <div class="cfg">
+      <div class="cfg-blk">
+        <span class="cfg-lbl">👥 Personas en mesa</span>
+        <div class="stepper">
+          <button class="s-btn" id="pDown" aria-label="Quitar persona">−</button>
+          <span class="s-val" id="pVal">1</span>
+          <button class="s-btn" id="pUp" aria-label="Añadir persona">+</button>
+        </div>
+      </div>
+      <div class="cfg-blk">
+        <label class="cfg-lbl" for="bprice">💶 Precio buffet / persona</label>
+        <div class="price-wrap">
+          <span class="euro-sym">€</span>
+          <input type="number" id="bprice" class="price-inp" value="22.90" min="1" max="150" step="0.5"/>
+        </div>
+        <span class="cfg-note">Habitual en Murcia: 18 – 28 €</span>
+      </div>
+    </div>
+
+    <p class="lbl">Carta del buffet</p>
+    <div class="srch">
+      <span class="srch-ico">🔍</span>
+      <input type="search" id="srch" placeholder="Buscar nigiri, gyoza, tempura…" autocomplete="off"/>
+    </div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <aside class="sidebar">
+    <div class="receipt">
+      <h2 class="r-title">🧾 Coste al restaurante</h2>
+      <ul class="r-lines" id="rlines">
+        <li class="r-empty"><span>🍽️</span><span>Añade platos para ver<br/>el coste al restaurante</span></li>
+      </ul>
+      <hr class="div"/>
+      <div class="s-row"><span>Total piezas/raciones</span><span class="s-val" id="sUnits">0</span></div>
+      <div class="s-row"><span>Coste materia prima</span><span class="s-val" id="sCost">0,00 €</span></div>
+      <div class="s-row"><span>Coste por comensal</span><span class="s-val" id="sPerP">0,00 €</span></div>
+      <hr class="div"/>
+      <div class="s-row"><span>Ingresos del buffet</span><span class="s-val" id="sRev">0,00 €</span></div>
+      <div class="s-row" style="font-weight:700"><span>Margen bruto</span><span class="s-val" id="sMarg">0,00 €</span></div>
+      <hr class="div"/>
+      <div class="s-total">
+        <span class="t-lbl">Coste total</span>
+        <span class="t-amt" id="sTot">0,00 €</span>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-top"><span>% coste sobre precio buffet</span><span id="bPct">0%</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bBar"></div></div>
+      </div>
+      <div class="verdict" id="verd"></div>
+      <button class="btn-rst" id="rst">🗑 Vaciar selección</button>
+      <p class="r-note">* Costes orientativos de materia prima. No incluyen costes fijos del local.</p>
+    </div>
+  </aside>
+</main>
+
+<button class="scr-top" id="scrTop">↑</button>
+<footer>🍣 Sushi Buffet Cost Calculator · Buffets en Murcia</footer>
+
+<script>
+'use strict';
+/* ═══════════════ 1. DATA ═══════════════ */
+const CATS=['Todos','Nigiris','Makis','Uramaki','Gyozas','Tempura','Sopas & Ensaladas','Extras','Postres','Bebidas'];
+const AVG={
+  'Nigiris':0.58,'Makis':0.25,'Uramaki':0.36,
+  'Gyozas':0.31,'Tempura':0.63,'Sopas & Ensaladas':0.65,
+  'Extras':0.76,'Postres':0.95,'Bebidas':0.45
+};
+const base=[
+  // NIGIRIS – por pieza
+  {id:'n1',cat:'Nigiris',emoji:'🍣',name:'Nigiri salmón',sub:'Arroz + lámina de salmón atlántico',cost:.55,unit:'pieza'},
+  {id:'n2',cat:'Nigiris',emoji:'🍣',name:'Nigiri atún',sub:'Arroz + lámina de atún rojo',cost:.85,unit:'pieza'},
+  {id:'n3',cat:'Nigiris',emoji:'🍣',name:'Nigiri langostino',sub:'Arroz + langostino cocido',cost:.65,unit:'pieza'},
+  {id:'n4',cat:'Nigiris',emoji:'🍣',name:'Nigiri pez mantequilla',sub:'Arroz + escolar (butterfish)',cost:.60,unit:'pieza'},
+  {id:'n5',cat:'Nigiris',emoji:'🍣',name:'Nigiri surimi',sub:'Arroz + palito de surimi',cost:.30,unit:'pieza'},
+  {id:'n6',cat:'Nigiris',emoji:'🍣',name:'Nigiri pez blanco',sub:'Arroz + lubina o dorada',cost:.55,unit:'pieza'},
+  // MAKIS – por pieza (promedio 0.25€)
+  {id:'m1',cat:'Makis',emoji:'🌀',name:'Maki salmón',sub:'Alga nori, arroz y salmón',cost:.26,unit:'pieza'},
+  {id:'m2',cat:'Makis',emoji:'🌀',name:'Maki atún',sub:'Alga nori, arroz y atún',cost:.30,unit:'pieza'},
+  {id:'m3',cat:'Makis',emoji:'🌀',name:'Maki aguacate',sub:'Alga nori, arroz y aguacate',cost:.22,unit:'pieza'},
+  {id:'m4',cat:'Makis',emoji:'🌀',name:'Maki pepino (kappa)',sub:'Alga nori, arroz y pepino',cost:.18,unit:'pieza'},
+  {id:'m5',cat:'Makis',emoji:'🌀',name:'Maki Philadelphia',sub:'Alga nori, salmón y queso',cost:.28,unit:'pieza'},
+  // URAMAKI – por pieza
+  {id:'u1',cat:'Uramaki',emoji:'🎭',name:'California Roll',sub:'Surimi, aguacate, pepino',cost:.29,unit:'pieza'},
+  {id:'u2',cat:'Uramaki',emoji:'🎭',name:'Philadelphia Roll',sub:'Salmón, queso Philadelphia, aguacate',cost:.35,unit:'pieza'},
+  {id:'u3',cat:'Uramaki',emoji:'🎭',name:'Spicy Salmon Roll',sub:'Salmón, mayonesa sriracha',cost:.33,unit:'pieza'},
+  {id:'u4',cat:'Uramaki',emoji:'🎭',name:'Spicy Tuna Roll',sub:'Atún, mayonesa sriracha',cost:.38,unit:'pieza'},
+  {id:'u5',cat:'Uramaki',emoji:'🎭',name:'Tempura Roll',sub:'Langostino tempura, aguacate',cost:.40,unit:'pieza'},
+  {id:'u6',cat:'Uramaki',emoji:'🎭',name:'Rainbow Roll',sub:'Variedad de salmón y atún por encima',cost:.44,unit:'pieza'},
+  // GYOZAS – por pieza
+  {id:'g1',cat:'Gyozas',emoji:'🥟',name:'Gyoza cerdo',sub:'Carne de cerdo, jengibre, col',cost:.30,unit:'pieza'},
+  {id:'g2',cat:'Gyozas',emoji:'🥟',name:'Gyoza langostino',sub:'Langostino, col, sésamo',cost:.40,unit:'pieza'},
+  {id:'g3',cat:'Gyozas',emoji:'🥟',name:'Gyoza vegetariana',sub:'Col, zanahoria, tofu',cost:.25,unit:'pieza'},
+  {id:'g4',cat:'Gyozas',emoji:'🥟',name:'Gyoza pollo',sub:'Pollo, shiitake, jengibre',cost:.28,unit:'pieza'},
+  // TEMPURA – por unidad
+  {id:'tp1',cat:'Tempura',emoji:'🍤',name:'Tempura langostino',sub:'Langostino rebozado crujiente',cost:.70,unit:'ud.'},
+  {id:'tp2',cat:'Tempura',emoji:'🍤',name:'Tempura verduras',sub:'Batata, pimiento, cebolla',cost:.60,unit:'ración'},
+  {id:'tp3',cat:'Tempura',emoji:'🍤',name:'Tempura calamar',sub:'Aros de calamar en tempura',cost:.60,unit:'ración'},
+  // SOPAS & ENSALADAS
+  {id:'e1',cat:'Sopas & Ensaladas',emoji:'🍜',name:'Sopa miso',sub:'Dashi, pasta miso, tofu, wakame',cost:.60,unit:'cuenco'},
+  {id:'e2',cat:'Sopas & Ensaladas',emoji:'🥗',name:'Ensalada wakame',sub:'Alga wakame, sésamo, vinagre de arroz',cost:.80,unit:'ración'},
+  {id:'e3',cat:'Sopas & Ensaladas',emoji:'🥗',name:'Edamame',sub:'Vainas de soja al vapor con sal',cost:.70,unit:'ración'},
+  {id:'e4',cat:'Sopas & Ensaladas',emoji:'🥗',name:'Ensalada pepino',sub:'Sunomono — pepino en vinagre de arroz',cost:.55,unit:'ración'},
+  // EXTRAS
+  {id:'x1',cat:'Extras',emoji:'🐙',name:'Takoyaki',sub:'Bola de pulpo con salsa y bonito',cost:.24,unit:'bola'},
+  {id:'x2',cat:'Extras',emoji:'🍗',name:'Karaage (pollo)',sub:'Pollo marinado en soja y sake',cost:.40,unit:'pieza'},
+  {id:'x3',cat:'Extras',emoji:'🍢',name:'Yakitori pollo',sub:'Brocheta de pollo con salsa tare',cost:.65,unit:'brocheta'},
+  {id:'x4',cat:'Extras',emoji:'🥩',name:'Tataki de salmón',sub:'Salmón vuelta y vuelta, sésamo, ponzu',cost:1.60,unit:'ración'},
+  {id:'x5',cat:'Extras',emoji:'🍱',name:'Arroz frito (yakimeshi)',sub:'Arroz salteado con huevo y verduras',cost:.90,unit:'ración'},
+  // POSTRES
+  {id:'d1',cat:'Postres',emoji:'🍡',name:'Mochi helado',sub:'Arroz glutinoso relleno de helado',cost:.90,unit:'pieza'},
+  {id:'d2',cat:'Postres',emoji:'🍦',name:'Helado de matcha',sub:'Bola de helado de té verde',cost:.70,unit:'bola'},
+  {id:'d3',cat:'Postres',emoji:'🍰',name:'Tarta de queso japonesa',sub:'Cheesecake esponjoso al horno',cost:1.40,unit:'porción'},
+  {id:'d4',cat:'Postres',emoji:'🥞',name:'Dorayaki',sub:'Panqueques rellenos de judía azuki',cost:.80,unit:'pieza'},
+  // BEBIDAS
+  {id:'b1',cat:'Bebidas',emoji:'🍵',name:'Té verde (tetera)',sub:'Té sencha japonés',cost:.40,unit:'tetera'},
+  {id:'b2',cat:'Bebidas',emoji:'💧',name:'Agua mineral',sub:'Botella 500ml',cost:.20,unit:'botella'},
+  {id:'b3',cat:'Bebidas',emoji:'🥤',name:'Refresco',sub:'Lata 330ml',cost:.45,unit:'lata'},
+  {id:'b4',cat:'Bebidas',emoji:'🍺',name:'Cerveza',sub:'Botellín 330ml',cost:.75,unit:'botellín'},
+];
+// Añadir "Otras" por categoría
+const OTROS=Object.keys(AVG).map(cat=>({
+  id:'o-'+cat.replace(/[^a-z]/gi,''),cat,emoji:'✨',
+  name:`Otras ${cat.toLowerCase()}`,
+  sub:`Precio medio de producción de ${cat.toLowerCase()}`,
+  cost:AVG[cat],unit:'pieza/ud.',isOther:true
+}));
+const MENU=[...base,...OTROS];
+
+/* ═══════════════ 2. STATE ═══════════════ */
+const S=(()=>{
+  const s={counts:{},persons:1,price:22.90,cat:'Todos',q:''};
+  const g={
+    n:id=>s.counts[id]??0,
+    all:()=>({...s.counts}),
+    persons:()=>s.persons,
+    price:()=>s.price,
+    cat:()=>s.cat,
+    q:()=>s.q,
+    sel:()=>MENU.filter(i=>(s.counts[i.id]??0)>0).map(i=>({item:i,qty:s.counts[i.id]})),
+    cost:()=>MENU.reduce((t,i)=>t+(g.n(i.id)*i.cost),0),
+    units:()=>Object.values(s.counts).reduce((t,v)=>t+v,0),
+    rev:()=>s.persons*s.price,
+    margin:()=>g.rev()-g.cost()
+  };
+  const m={
+    delta:(id,d)=>{const n=Math.max(0,(s.counts[id]??0)+d);n===0?delete s.counts[id]:s.counts[id]=n},
+    setTo:(id,v)=>{const n=Math.max(0,Math.min(999,v));n===0?delete s.counts[id]:s.counts[id]=n},
+    persons:v=>{s.persons=Math.min(20,Math.max(1,v))},
+    price:v=>{const p=parseFloat(v);if(p>0)s.price=p},
+    cat:c=>{s.cat=c},
+    q:q=>{s.q=q.toLowerCase().trim()},
+    reset:()=>{Object.keys(s.counts).forEach(k=>delete s.counts[k])}
+  };
+  return{g,m};
+})();
+
+/* ═══════════════ 3. RENDER ═══════════════ */
+const eur=n=>n.toLocaleString('es-ES',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});
+function mCls(m){return m>10?'g-great':m>0?'g-ok':m>-5?'g-warn':'g-bad'}
+function mVerdict(m){
+  if(m>15)return{cls:'v-great',msg:'😌 ¡Visita rentable! El restaurante gana '+eur(m)+' con vuestra mesa.'};
+  if(m>5) return{cls:'v-ok',   msg:'🤔 Equilibrado. Margen ajustado de '+eur(m)+'.'};
+  if(m>0) return{cls:'v-warn', msg:'😬 Al límite. Solo '+eur(m)+' de margen bruto.'};
+  if(m>-8)return{cls:'v-bad',  msg:'😅 Habéis comido por encima del precio. El restaurante pierde '+eur(Math.abs(m))+'.'};
+  return         {cls:'v-bad',  msg:'🔥 ¡Pérdida de '+eur(Math.abs(m))+'! El restaurante os tiene fichados. 🏆'};
+}
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=CATS.map(c=>
+    `<button class="tab${c===S.g.cat()?' on':''}" data-cat="${c}">${c}</button>`
+  ).join('');
+}
+
+function renderGrid(){
+  const el=document.getElementById('grid');
+  const q=S.g.q(),cat=S.g.cat(),counts=S.g.all();
+  const vis=MENU.filter(i=>{
+    const okC=cat==='Todos'||i.cat===cat;
+    const okQ=!q||i.name.toLowerCase().includes(q)||i.cat.toLowerCase().includes(q)||i.sub.toLowerCase().includes(q);
+    return okC&&okQ;
+  });
+  if(!vis.length){el.innerHTML=`<div class="no-res">🔍 Sin resultados para "<strong>${q}</strong>"</div>`;return}
+  el.innerHTML=vis.map(item=>{
+    const qty=counts[item.id]??0,sel=qty>0;
+    const sub=qty>0?`<div class="c-sub">Subtotal: ${eur(qty*item.cost)}</div>`:'';
+    const ob=item.isOther?'<span class="other-badge">precio medio</span>':''
+    return`<article class="card${sel?' sel':''}${item.isOther?' other':''}" data-id="${item.id}" role="button" tabindex="0">
+      ${ob}
+      <span class="emoji">${item.emoji}</span>
+      <div class="c-name">${item.name}</div>
+      <div class="c-sub">${item.sub}</div>
+      <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:2px">
+        <span class="c-price">${eur(item.cost)}</span>
+        <span class="c-unit">/ ${item.unit}</span>
+      </div>
+      <div class="counter">
+        <button class="c-btn" data-act="down" data-id="${item.id}">−</button>
+        <span class="c-num${qty===0?' zero':''}" data-edit="${item.id}">${qty}</span>
+        <button class="c-btn" data-act="up" data-id="${item.id}">+</button>
+      </div>
+      ${sub}
+    </article>`;
+  }).join('');
+}
+
+function renderReceipt(){
+  const sel=S.g.sel(),cost=S.g.cost(),units=S.g.units(),
+        rev=S.g.rev(),margin=S.g.margin(),persons=S.g.persons();
+  // Lines
+  const ll=document.getElementById('rlines');
+  if(!sel.length){
+    ll.innerHTML='<li class="r-empty"><span>🍽️</span><span>Añade platos para ver<br/>el coste al restaurante</span></li>';
+  }else{
+    ll.innerHTML=sel.map(({item,qty})=>
+      `<li class="r-line">
+        <span class="r-emo">${item.emoji}</span>
+        <span class="r-name">${item.name}</span>
+        <span class="r-qty">×${qty}</span>
+        <span class="r-amt">${eur(qty*item.cost)}</span>
+      </li>`
+    ).join('');
+  }
+  document.getElementById('sUnits').textContent=units+' uds.';
+  document.getElementById('sCost').textContent=eur(cost);
+  document.getElementById('sTot').textContent=eur(cost);
+  document.getElementById('sPerP').textContent=persons>0?eur(cost/persons):eur(0);
+  document.getElementById('sRev').textContent=eur(rev);
+  const mEl=document.getElementById('sMarg');
+  mEl.textContent=eur(margin);mEl.className='s-val '+mCls(margin);
+  // Bar
+  const pct=rev>0?Math.min(200,Math.round(cost/rev*100)):0;
+  const pctD=Math.min(100,pct);
+  document.getElementById('bPct').textContent=pct+'%';
+  const bar=document.getElementById('bBar');
+  bar.style.width=pctD+'%';
+  bar.style.background=pct<60?'var(--green)':pct<85?'var(--amber)':'var(--red)';
+  // Verdict
+  const vEl=document.getElementById('verd');
+  if(!sel.length){vEl.className='verdict';return}
+  const v=mVerdict(margin);
+  vEl.className='verdict on '+v.cls;vEl.textContent=v.msg;
+}
+
+function update(){renderGrid();renderReceipt()}
+
+/* ═══════════════ 4. INLINE EDITOR ═══════════════ */
+function activateEditor(span){
+  const id=span.dataset.edit;
+  const cur=S.g.n(id);
+  const inp=document.createElement('input');
+  inp.type='number';inp.value=cur;inp.min=0;inp.max=999;
+  inp.className='c-edit';
+  span.replaceWith(inp);
+  inp.focus();inp.select();
+  function commit(){
+    const v=parseInt(inp.value)||0;
+    S.m.setTo(id,v);update();
+  }
+  inp.addEventListener('blur',commit);
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();commit()}
+    if(e.key==='Escape'){update()}
+  });
+  inp.addEventListener('click',e=>e.stopPropagation());
+}
+
+/* ═══════════════ 5. APP ═══════════════ */
+// Tabs
+document.getElementById('tabs').addEventListener('click',e=>{
+  const b=e.target.closest('[data-cat]');if(!b)return;
+  S.m.cat(b.dataset.cat);renderTabs();update();
+});
+// Grid
+document.getElementById('grid').addEventListener('click',e=>{
+  const editSpan=e.target.closest('[data-edit]');
+  if(editSpan){e.stopPropagation();activateEditor(editSpan);return}
+  const btn=e.target.closest('.c-btn');
+  if(btn){e.stopPropagation();S.m.delta(btn.dataset.id,btn.dataset.act==='up'?1:-1);update();return}
+  const card=e.target.closest('.card');
+  if(card){S.m.delta(card.dataset.id,1);update()}
+});
+document.getElementById('grid').addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const card=e.target.closest('.card');
+  if(card){e.preventDefault();S.m.delta(card.dataset.id,1);update()}
+});
+// Search
+document.getElementById('srch').addEventListener('input',e=>{S.m.q(e.target.value);update()});
+// Persons
+document.getElementById('pDown').addEventListener('click',()=>{S.m.persons(S.g.persons()-1);document.getElementById('pVal').textContent=S.g.persons();update()});
+document.getElementById('pUp').addEventListener('click',()=>{S.m.persons(S.g.persons()+1);document.getElementById('pVal').textContent=S.g.persons();update()});
+// Price
+document.getElementById('bprice').addEventListener('input',e=>{S.m.price(e.target.value);update()});
+// Reset
+document.getElementById('rst').addEventListener('click',()=>{S.m.reset();update()});
+// Scroll top
+const scr=document.getElementById('scrTop');
+window.addEventListener('scroll',()=>scr.classList.toggle('on',scrollY>280));
+scr.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+// Init
+renderTabs();update();
+</script>
+</body>
+</html>
