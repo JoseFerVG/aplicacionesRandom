@@ -9,9 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-/* ═══════════════════════════════════════
-   DESIGN TOKENS
-   ═══════════════════════════════════════ */
+  
 :root {
   /* Surface — warm cream palette */
   --bg: #faf9f6;
@@ -628,22 +626,30 @@ a { text-decoration: none; color: inherit; }
         </div>
       </a>
 
-      <!-- Placeholder 1 -->
-      <div class="app-card placeholder reveal" aria-label="Próximamente">
-        <span class="placeholder-badge">Próximamente</span>
+      <!-- Contador de Piezas -->
+      <a href="./contadorPiezas/index.html" class="app-card reveal" aria-label="Abrir Contador Pop-Art">
         <div class="card-visual">
-          <div class="card-visual-bg" style="background: linear-gradient(145deg, #f5f5ff 0%, #f0f7ff 100%);"></div>
-          <span class="card-icon" aria-hidden="true">🎯</span>
+          <div class="card-visual-bg" style="background: repeating-linear-gradient(45deg, #f4f4f0, #f4f4f0 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20px);"></div>
+          <span class="card-icon" aria-hidden="true">💥</span>
         </div>
         <div class="card-content">
-          <span class="card-badge badge-game">🎮 Juego</span>
-          <h3 class="card-title">En desarrollo</h3>
+          <span class="card-badge badge-util">📱 Utilidad</span>
+          <h3 class="card-title">Sushímetro Pop-Art</h3>
           <p class="card-desc">
-            Una nueva app está en camino. ¿Tienes alguna idea? Cuéntamela.
+            Contador multi-piezas para buffet libre con una estética brutalista.
+            Lleva la cuenta de lo que comes y guarda un ticket de tu batalla.
           </p>
-          <div class="card-tags"><span class="tag">???</span></div>
+          <div class="card-tags">
+            <span class="tag">Contador</span>
+            <span class="tag">Pop-Art</span>
+            <span class="tag">Ticket</span>
+          </div>
+          <span class="card-cta">
+            Lleva la cuenta
+            <span class="arrow" aria-hidden="true">→</span>
+          </span>
         </div>
-      </div>
+      </a>
 
       <!-- Placeholder 2 -->
       <div class="app-card placeholder reveal" aria-label="Próximamente">
