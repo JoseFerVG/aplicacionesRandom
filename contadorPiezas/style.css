@@ -1,0 +1,318 @@
+/* 
+ * Estética Pop-Art / Neo-Brutalismo
+ * Colores planos, bordes gruesos negros, sombras sólidas, tipografías pesadas 
+ */
+
+:root {
+    --bg-color: #f4f4f0; 
+    --text-color: #000000;
+    --border-color: #000000;
+    
+    /* Paleta vibrante para cada componente */
+    --color-nigiri: #FF2A54;   /* Rosa/Rojo Neón */
+    --color-maki: #00E5FF;     /* Cian Eléctrico */
+    --color-uramaki: #FFD500;  /* Amarillo Sol */
+    --color-gyoza: #B92B27;    /* Granate / o #9D00FF (Morado Pop) */
+    --color-sashimi: #FF6B00;  /* Naranja Fuerte */
+    --color-yakitori: #00FF66; /* Verde Lima */
+    --color-temaki: #FF99CC;   /* Rosa Chicle */
+    --color-panbao: #FFFFFF;   /* Blanco Puro */
+
+    --color-gyoza: #C94BFF;    /* Morado Pop (Sobreescrito para mejor encaje estético) */
+
+    --border-thickness: 4px;
+    --shadow-depth: 6px;
+    
+    --transition-snappy: 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    /* Pattern de puntitos estilo cómic pop-art retro */
+    background-image: radial-gradient(var(--border-color) 10%, transparent 11%);
+    background-size: 24px 24px;
+    color: var(--text-color);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* Suaviza los puntitos de fondo para que no maten los ojos */
+    background-position: 0 0;
+    background-color: #e5e5f7;
+    background-image:  radial-gradient(#000000 0.8px, transparent 0.8px), radial-gradient(#000000 0.8px, #e5e5f7 0.8px);
+    background-size: 32px 32px;
+    background-position: 0 0,16px 16px;
+}
+
+/* 
+ * 1. Sticky Header / Totalizador
+ */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    border-bottom: var(--border-thickness) solid var(--border-color);
+    z-index: 100;
+    box-shadow: 0 var(--shadow-depth) 0 var(--border-color);
+    padding: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap; /* Para pantallas pequeñas */
+}
+
+.title {
+    font-weight: 900;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: -1.5px;
+}
+
+.total-tracker {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background-color: var(--color-uramaki);
+    padding: 0.5rem 1.5rem;
+    border: var(--border-thickness) solid var(--border-color);
+    border-radius: 50px;
+    box-shadow: 4px 4px 0 var(--border-color);
+}
+
+.total-label {
+    font-weight: 900;
+    font-size: 1.2rem;
+}
+
+#total-counter {
+    font-size: 2.2rem;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    /* Pequeña animación hardware accelerated cuando cambia el total */
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-block;
+}
+
+/* Neo-Brutalist Reset Button */
+.btn-reset {
+    background-color: var(--color-nigiri);
+    color: #fff;
+    font-family: inherit;
+    font-weight: 900;
+    font-size: 1.1rem;
+    padding: 0.6rem 1.2rem;
+    border: var(--border-thickness) solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 4px 4px 0 var(--border-color);
+    cursor: pointer;
+    transition: transform var(--transition-snappy), box-shadow var(--transition-snappy);
+    text-transform: uppercase;
+}
+
+.btn-reset:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--border-color);
+}
+
+/* 
+ * 2. Grid de Piezas (Menú)
+ */
+.menu-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: grid;
+    /* Auto-fill responde perfectamente a cualquier tamaño de pantalla */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2.5rem;
+    padding-bottom: 5rem;
+}
+
+/* 
+ * 3. Tarjeta Neo-Brutalista (Card)
+ */
+.piece-card {
+    background-color: var(--card-bg, #fff); /* Se inyectará vía JS inline variable */
+    border: var(--border-thickness) solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: var(--shadow-depth) var(--shadow-depth) 0 var(--border-color);
+    position: relative;
+    transition: transform var(--transition-snappy), box-shadow var(--transition-snappy);
+}
+
+/* Hover de tarjeta juguetón */
+@media (hover: hover) {
+    .piece-card:hover {
+        transform: translate(-4px, -4px);
+        box-shadow: 10px 10px 0 var(--border-color);
+    }
+}
+
+.piece-header {
+    text-align: center;
+}
+
+.piece-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 0.2rem;
+    color: var(--text-color);
+}
+
+.piece-emoji {
+    font-size: 3.5rem;
+    display: block;
+    margin-top: 0.5rem;
+    /* Pequeña sombra de texto para separar el emoji del fondo */
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+}
+
+/* 
+ * 4. Contadores y Controles Individuales
+ */
+.piece-counter {
+    background-color: #fff;
+    border: var(--border-thickness) solid var(--border-color);
+    padding: 0.5rem 1.5rem;
+    border-radius: 12px;
+    font-size: 3rem;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    min-width: 100px;
+    text-align: center;
+    /* Sombra hundida (inset) típica brutalista */
+    box-shadow: inset 4px 4px 0 rgba(0,0,0,0.1);
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-block;
+}
+
+.controls {
+    display: flex;
+    gap: 1.5rem;
+    width: 100%;
+    justify-content: center;
+    position: relative;
+}
+
+.btn-ctrl {
+    width: 56px;
+    height: 56px;
+    background-color: #fff;
+    border: var(--border-thickness) solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--border-color);
+    transition: transform var(--transition-snappy), box-shadow var(--transition-snappy);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    color: var(--text-color);
+    touch-action: manipulation;
+}
+
+.btn-ctrl svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.btn-ctrl.add {
+    background-color: #fff; /* Las add suelen ser blancas para saltar más */
+}
+
+.btn-ctrl.sub {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-ctrl:active:not(:disabled) {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--border-color);
+}
+
+/* Estado deshabilitado en Brutalismo */
+.btn-ctrl:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: 0 0 0 var(--border-color);
+    transform: translate(4px, 4px);
+    background-color: #a0a0a0 !important;
+}
+
+/* 
+ * 5. Animaciones: Pop Art POW! (Microinteracciones flotantes)
+ */
+.float-pow {
+    position: absolute;
+    color: var(--text-color);
+    background-color: #fff;
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    font-weight: 900;
+    font-size: 1.5rem;
+    pointer-events: none;
+    opacity: 0;
+    /* Emerge cerca del botón de sumar */
+    left: 70%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.5) rotate(-10deg);
+    border: 3px solid var(--border-color);
+    box-shadow: 2px 2px 0 var(--border-color);
+    will-change: transform, opacity;
+    z-index: 10;
+}
+
+/* Hardware Accelerated Animation via transform & opacity */
+@keyframes popPow {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.3) rotate(-15deg);
+    }
+    15% {
+        opacity: 1;
+        transform: translate(-50%, -80%) scale(1.3) rotate(8deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -180%) scale(1) rotate(-8deg);
+    }
+}
+
+/* Responsividad para móviles pequeños */
+@media (max-width: 480px) {
+    .header-content {
+        justify-content: center;
+        flex-direction: column;
+    }
+    
+    #total-counter {
+        font-size: 1.8rem;
+    }
+
+    .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
