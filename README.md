@@ -25,7 +25,6 @@
 Todo el código está concebido bajo una **filosofía limpia**:
 - ✨ **Sin Frameworks pesados**: Todo es HTML Semántico, CSS Puro y Vanilla JavaScript.
 - 🍪 **Sin Cookies ni Rastreadores**: Cero *tracking* o venta de datos.
-- 🎨 **Estilo Cuidado**: Diseños responsive, desde Neomorfismo hasta Brutalismo Pop-Art.
 
 ---
 
@@ -42,7 +41,6 @@ Esta calculadora realista estima el coste de la materia prima que consumes frent
 
 ### 🍱 2. [Sushímetro / Bunker Sushi Pop-Art](./contadorPiezas)
 Un contador multi-piezas para ir registrando lo que comes en tiempo real mientras disfrutas de un buffet. Olvídate de perder la cuenta.
-- 💥 **Estética Brutalista / Neo-Pop-Art:** Colores vibrantes, sombras duras, tipografías marcadas.
 - ⚡ **Animaciones Hardware-Accelerated:** Sensación táctil (POW!) hiper-responsiva en cada pulsación.
 - 📸 **Generador de Tickets:** Exporta tu comida a un ticket en formato imagen de alta resolución para presumir de lo mucho que has devorado.
 
