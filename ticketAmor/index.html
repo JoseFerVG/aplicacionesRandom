@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creador de Tickets Dorados de Amor | Willy Wonka Style</title>
+    <!-- Google Fonts: Playfair Display (Serif elegante) y Outfit (Moderna y limpia) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Pinyon+Script&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Fondo animado con corazones flotantes -->
+    <div class="background-hearts" id="hearts-container"></div>
+
+    <div class="app-container">
+        <!-- Encabezado Principal -->
+        <header class="main-header">
+            <div class="logo-area">
+                <span class="sub-logo">L'Chocolaterie d'Amour</span>
+                <h1>🎟️ El Creador de Tickets Rosas 🎟️</h1>
+                <p class="tagline">Regala momentos mágicos y favores románticos al estilo Willy Wonka</p>
+            </div>
+        </header>
+
+        <main class="main-grid">
+            <!-- Columna Izquierda: Catálogo y Edición -->
+            <section class="configurator-panel">
+                <!-- Tabs de Categorías -->
+                <div class="tabs-container">
+                    <nav class="category-tabs" id="category-tabs">
+                        <button class="tab-btn active" data-category="all">✨ Todos</button>
+                        <!-- Se poblará dinámicamente -->
+                    </nav>
+                </div>
+
+                <!-- Lista de Tickets del Catálogo -->
+                <div class="section-header">
+                    <h2>Selecciona tus Vales de Favor</h2>
+                </div>
+                
+                <div class="tickets-grid" id="tickets-catalog-container">
+                    <!-- Se poblará dinámicamente -->
+                </div>
+            </section>
+
+            <!-- Columna Derecha: Vista Previa Dinámica e Impresión -->
+            <section class="preview-panel">
+                <div class="sticky-container">
+                    
+                    <!-- Tarjeta de Vista Previa del Ticket (Flipping 3D) -->
+                    <div class="preview-section">
+                        <div class="preview-header">
+                            <h3>Vista Previa en Vivo</h3>
+                            <span class="preview-instructions">Haz clic en el ticket o usa los botones para voltearlo</span>
+                        </div>
+                        
+                        <div class="ticket-preview-wrapper" id="ticket-click-flip">
+                            <!-- Contenedor 3D Simplificado (Fijo para Safari/Chrome backface bug) -->
+                            <div class="ticket-3d-card" id="ticket-card-3d">
+                                <!-- Cara A: FRENTE -->
+                                <div class="wonka-ticket pink-gold-ticket ticket-front" id="preview-front-side">
+                                    <!-- Se poblará dinámicamente -->
+                                </div>
+                                <!-- Cara B: REVERSO -->
+                                <div class="wonka-ticket pink-gold-ticket back ticket-back" id="preview-back-side">
+                                    <!-- Se poblará dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Controles de Volteo -->
+                        <div class="preview-controls">
+                            <button id="btn-preview-front" class="btn-toggle active">👁️ Ver Frente</button>
+                            <button id="btn-preview-back" class="btn-toggle">👁️ Ver Reverso</button>
+                        </div>
+                    </div>
+
+                    <!-- Resumen de Tickets Seleccionados (Efecto Recibo / Ticket Reel) -->
+                    <div class="summary-section">
+                        <h3>Detalle de Canje</h3>
+                        <div class="summary-card">
+                            <div class="summary-stats">
+                                <div class="summary-stat-box">
+                                    <span class="stat-label">Modelos</span>
+                                    <strong id="summary-unique-count" class="stat-val">0</strong>
+                                </div>
+                                <div class="summary-stat-box">
+                                    <span class="stat-label">Total Tickets</span>
+                                    <strong id="summary-total-count" class="stat-val">0</strong>
+                                </div>
+                            </div>
+                            
+                            <div class="selected-items-list" id="selected-items-preview">
+                                <p class="empty-list-msg">No has seleccionado ningún favor. ¡Elige del catálogo de la izquierda!</p>
+                            </div>
+
+                            <!-- Opciones de Configuración de Impresión -->
+                            <div class="print-options">
+                                <label for="print-layout-select">📐 Método de Corte e Impresión:</label>
+                                <select id="print-layout-select" class="form-select">
+                                    <option value="foldable">🎟️ Plegable Horizontal (Frente y reverso juntos para doblar) - RECOMENDADO</option>
+                                    <option value="double-sided">🖨️ Doble Cara (Frente en página 1, Reverso en página 2)</option>
+                                </select>
+                            </div>
+
+                            <!-- Botón de Generar -->
+                            <button id="btn-generate-pdf" class="btn btn-primary btn-block" disabled>
+                                <span>✨ Generar Plantilla de Impresión</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast-notification">¡Guardado con éxito!</div>
+
+    <script src="app.js"></script>
+</body>
+</html>
