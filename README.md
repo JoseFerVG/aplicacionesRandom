@@ -41,6 +41,11 @@ Esta calculadora realista estima el coste de la materia prima que consumes frent
 Un contador multi-piezas para ir registrando lo que comes en tiempo real mientras disfrutas de un buffet. Olvídate de perder la cuenta.
 - 📸 **Generador de Tickets:** Exporta tu comida a un ticket en formato imagen de alta resolución para presumir de lo mucho que has devorado.
 
+### 🎟️ 3. [Vales de Amor Willy Wonka](./ticketAmor)
+Un generador y personalizador de tickets dorados y rosas de amor para regalar vales de favores románticos.
+- 🍫 **Diseño Willy Wonka:** Estética inspirada en los billetes dorados, listos para imprimir y regalar.
+- 💝 **Catálogo Temático:** Decenas de ideas organizadas por romance, relax, tiempo juntos, tareas y más, con soporte para edición manual.
+
 ---
 
 
