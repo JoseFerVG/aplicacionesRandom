@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imprimir Mis Tickets Rosas de Amor</title>
+    <!-- Google Fonts: Playfair Display y Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Pinyon+Script&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="print.css">
+</head>
+<body>
+
+    <!-- Panel de Control en Pantalla (Oculto al Imprimir) -->
+    <header class="no-print print-header">
+        <div class="print-header-content">
+            <div class="print-nav">
+                <a href="index.html" class="btn-back">⬅️ Volver a editar</a>
+                <h1>🖨️ Vista de Impresión / PDF</h1>
+            </div>
+            
+            <div class="print-actions">
+                <button onclick="window.print()" class="btn btn-print">✨ Imprimir / Guardar como PDF</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Instrucciones de Impresión en Pantalla (Oculto al Imprimir) -->
+    <section class="no-print print-tips-box">
+        <div class="tips-container">
+            <h3>💡 Instrucciones para una impresión perfecta:</h3>
+            <ul>
+                <li><strong>Habilitar Gráficos de Fondo:</strong> En la ventana de impresión, busca <em>"Más opciones"</em> y asegúrate de marcar la casilla <strong>"Gráficos de fondo" (Background graphics)</strong>. Si no lo haces, los tickets saldrán en blanco sin el color rosa brillante.</li>
+                <li><strong>Ajuste de Escala:</strong> Ajusta la escala a <strong>100%</strong> (o <em>"Ajustar al área de impresión"</em>).</li>
+                <li><strong>Márgenes:</strong> Configura los márgenes en <strong>"Ninguno" (None)</strong> o <em>"Mínimo"</em>.</li>
+                <li><strong>Formato papel:</strong> Recomendado en tamaño <strong>A4</strong> o <strong>Carta (Letter)</strong> en orientación <strong>Vertical</strong>.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Contenedor Principal donde se renderizan las páginas de tickets -->
+    <main class="print-canvas" id="print-canvas">
+        <!-- RENDERIZADO DINÁMICAMENTE POR JAVASCRIPT -->
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPrintableTickets();
+        });
+
+        function renderPrintableTickets() {
+            const canvas = document.getElementById('print-canvas');
+            const payloadStr = localStorage.getItem('love_tickets_print_payload');
+            
+            if (!payloadStr) {
+                canvas.innerHTML = `
+                    <div class="no-print error-msg">
+                        <h2>No hay tickets seleccionados para imprimir.</h2>
+                        <a href="index.html" class="btn btn-primary">Volver al Creador</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const payload = JSON.parse(payloadStr);
+            const tickets = payload.tickets;
+            const layout = payload.layout;
+
+            // Flatten list based on quantity (e.g. if ticket has qty 2, duplicate it in the array)
+            const flatTickets = [];
+            tickets.forEach(t => {
+                for (let i = 0; i < t.quantity; i++) {
+                    flatTickets.push({
+                        ...t,
+                        index: i + 1
+                    });
+                }
+            });
+
+            if (flatTickets.length === 0) {
+                canvas.innerHTML = `
+                    <div class="no-print error-msg">
+                        <h2>No has seleccionado cantidades mayores a 0.</h2>
+                        <a href="index.html" class="btn btn-primary">Volver al Creador</a>
+                    </div>
+                `;
+                return;
+            }
+
+            if (layout === 'foldable') {
+                renderFoldableLayout(canvas, flatTickets);
+            } else {
+                renderDoubleSidedLayout(canvas, flatTickets);
+            }
+        }
+
+        // Foldable Layout Renders (2 foldable tickets per page)
+        function renderFoldableLayout(canvas, flatTickets) {
+            let html = '';
+            const ticketsPerPage = 2;
+            const pageCount = Math.ceil(flatTickets.length / ticketsPerPage);
+
+            for (let p = 0; p < pageCount; p++) {
+                html += `<div class="print-page page-foldable">`;
+                html += `<div class="page-foldable-layout">`;
+                
+                const pageTickets = flatTickets.slice(p * ticketsPerPage, (p + 1) * ticketsPerPage);
+                
+                pageTickets.forEach(t => {
+                    html += `
+                        <div class="print-ticket-container foldable-container">
+                            <!-- Crop Marks -->
+                            <div class="crop-mark top-left"></div>
+                            <div class="crop-mark top-right"></div>
+                            <div class="crop-mark bottom-left"></div>
+                            <div class="crop-mark bottom-right"></div>
+
+                            <!-- FRENTE DEL TICKET -->
+                            <div class="wonka-ticket pink-gold-ticket ticket-front">
+                                <div class="ticket-content-wrapper">
+                                    <div class="ticket-border-outer">
+                                        <div class="ticket-border-inner">
+                                            <div class="ticket-star gold-star top-left">★</div>
+                                            <div class="ticket-star gold-star top-right">★</div>
+                                            <div class="ticket-star gold-star bottom-left">★</div>
+                                            <div class="ticket-star gold-star bottom-right">★</div>
+                                            
+                                            <div class="ticket-header">
+                                                <div class="ticket-brand">WONKA'S LOVE TICKET</div>
+                                                <div class="ticket-main-title">VALE DE AMOR</div>
+                                            </div>
+                                            
+                                            <div class="ticket-body">
+                                                <div class="ticket-salutation">FELICIDADES AL AFORTUNADO PORTADOR</div>
+                                                <div class="ticket-favor-title">${escapeHTML(t.title)}</div>
+                                                <div class="ticket-favor-desc">${escapeHTML(t.description)}</div>
+                                            </div>
+                                            
+                                            <div class="ticket-footer">
+                                                <div class="ticket-serial">Nº <span>${t.serial}</span></div>
+                                                <div class="ticket-terms" title="${escapeHTML(t.terms)}">${escapeHTML(t.terms)}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LÍNEA DE PLIEGUE (FOLD LINE) -->
+                            <div class="fold-line">
+                                <span>✂️ DOBLEZ / CORTAR A TRAVÉS ✂️</span>
+                            </div>
+
+                            <!-- DORSO DEL TICKET (Rotated 180° so it aligns upright when folded backward) -->
+                            <div class="wonka-ticket pink-gold-ticket back ticket-back">
+                                <div class="ticket-content-wrapper">
+                                    <div class="ticket-border-outer">
+                                        <div class="ticket-border-inner ticket-back-content">
+                                            <div class="ticket-star gold-star top-left">★</div>
+                                            <div class="ticket-star gold-star top-right">★</div>
+                                            <div class="ticket-star gold-star bottom-left">★</div>
+                                            <div class="ticket-star gold-star bottom-right">★</div>
+                                            
+                                            <div class="ticket-seal">L'Chocolaterie d'Amour</div>
+                                            
+                                            <p class="ticket-back-message">
+                                                Este ticket dorado certifica la entrega de amor incondicional y favores concedidos.
+                                            </p>
+                                            
+                                            <ul class="ticket-rules-list">
+                                                <li>Canjeable con un abrazo largo.</li>
+                                                <li>Válido a cualquier hora.</li>
+                                                <li>Sonrisa obligatoria al cumplirlo.</li>
+                                            </ul>
+                                            
+                                            <div class="ticket-barcode-area">
+                                                <div class="fake-barcode"></div>
+                                                <div class="barcode-text">${t.serial}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`; // Close page-foldable-layout
+                html += `</div>`; // Close page
+            }
+
+            canvas.innerHTML = html;
+        }
+
+        // Double Sided Layout Renders (Centered single-column layout: 3 tickets per page)
+        function renderDoubleSidedLayout(canvas, flatTickets) {
+            let html = '';
+            const ticketsPerPage = 3;
+            const pagePairs = Math.ceil(flatTickets.length / ticketsPerPage);
+
+            for (let pair = 0; pair < pagePairs; pair++) {
+                const startIdx = pair * ticketsPerPage;
+                const pageTickets = flatTickets.slice(startIdx, startIdx + ticketsPerPage);
+                
+                // --- PAGE 1: FRONTS (Single column, centered) ---
+                html += `<div class="print-page page-fronts">`;
+                html += `<div class="print-column-layout">`;
+                
+                for (let i = 0; i < pageTickets.length; i++) {
+                    const t = pageTickets[i];
+                    html += `
+                        <div class="print-ticket-container">
+                            <!-- Crop Marks -->
+                            <div class="crop-mark top-left"></div>
+                            <div class="crop-mark top-right"></div>
+                            <div class="crop-mark bottom-left"></div>
+                            <div class="crop-mark bottom-right"></div>
+
+                            <div class="wonka-ticket pink-gold-ticket ticket-front">
+                                <div class="ticket-content-wrapper">
+                                    <div class="ticket-border-outer">
+                                        <div class="ticket-border-inner">
+                                            <div class="ticket-star gold-star top-left">★</div>
+                                            <div class="ticket-star gold-star top-right">★</div>
+                                            <div class="ticket-star gold-star bottom-left">★</div>
+                                            <div class="ticket-star gold-star bottom-right">★</div>
+                                            
+                                            <div class="ticket-header">
+                                                <div class="ticket-brand">WONKA'S LOVE TICKET</div>
+                                                <div class="ticket-main-title">VALE DE AMOR</div>
+                                            </div>
+                                            
+                                            <div class="ticket-body">
+                                                <div class="ticket-salutation">FELICIDADES AL AFORTUNADO PORTADOR</div>
+                                                <div class="ticket-favor-title">${escapeHTML(t.title)}</div>
+                                                <div class="ticket-favor-desc">${escapeHTML(t.description)}</div>
+                                            </div>
+                                            
+                                            <div class="ticket-footer">
+                                                <div class="ticket-serial">Nº <span>${t.serial}</span></div>
+                                                <div class="ticket-terms" title="${escapeHTML(t.terms)}">${escapeHTML(t.terms)}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                html += `</div>`; // Close column
+                html += `</div>`; // Close fronts page
+                
+                // --- PAGE 2: BACKS (Single column, centered, identical index mapping) ---
+                html += `<div class="print-page page-backs">`;
+                html += `<div class="print-column-layout">`;
+                
+                for (let i = 0; i < pageTickets.length; i++) {
+                    const t = pageTickets[i];
+                    html += `
+                        <div class="print-ticket-container">
+                            <!-- Crop Marks -->
+                            <div class="crop-mark top-left"></div>
+                            <div class="crop-mark top-right"></div>
+                            <div class="crop-mark bottom-left"></div>
+                            <div class="crop-mark bottom-right"></div>
+
+                            <div class="wonka-ticket pink-gold-ticket back ticket-back">
+                                <div class="ticket-content-wrapper">
+                                    <div class="ticket-border-outer">
+                                        <div class="ticket-border-inner ticket-back-content">
+                                            <div class="ticket-star gold-star top-left">★</div>
+                                            <div class="ticket-star gold-star top-right">★</div>
+                                            <div class="ticket-star gold-star bottom-left">★</div>
+                                            <div class="ticket-star gold-star bottom-right">★</div>
+                                            
+                                            <div class="ticket-seal">L'Chocolaterie d'Amour</div>
+                                            
+                                            <p class="ticket-back-message">
+                                                Este ticket dorado certifica la entrega de amor incondicional y favores concedidos.
+                                            </p>
+                                            
+                                            <ul class="ticket-rules-list">
+                                                <li>Canjeable con un abrazo largo.</li>
+                                                <li>Válido a cualquier hora.</li>
+                                                <li>Sonrisa obligatoria al cumplirlo.</li>
+                                            </ul>
+                                            
+                                            <div class="ticket-barcode-area">
+                                                <div class="fake-barcode"></div>
+                                                <div class="barcode-text">${t.serial}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                html += `</div>`; // Close column
+                html += `</div>`; // Close backs page
+            }
+
+            canvas.innerHTML = html;
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+</html>
