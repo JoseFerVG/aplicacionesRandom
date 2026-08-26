@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Una ruta especial ✨</title>
+  <title>Una ruta para nosotros ✨</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #FAFAF7;
+      --bg: #FAF9F6;
       --card-bg: #FFFFFF;
-      --text-main: #2D2C2A;
-      --text-muted: #7A7875;
-      --accent: #B05D5D;
-      --accent-soft: #F7EDED;
-      --border: #EBEAE5;
-      --error: #C84B4B;
-      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+      --text-main: #2C2A29;
+      --text-muted: #7E7C79;
+      --accent: #B25858;
+      --accent-soft: #F9EEEE;
+      --border: #ECEAE4;
+      --error: #C94A4A;
+      --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.06);
     }
 
     * {
@@ -51,7 +51,6 @@
       padding: 36px 24px;
       box-shadow: var(--shadow);
       text-align: center;
-      transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
     .progress-bar {
@@ -132,7 +131,7 @@
       font-size: 1rem;
       font-family: inherit;
       color: var(--text-main);
-      background: #FAFAF7;
+      background: #FAF9F6;
       text-align: center;
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -141,7 +140,7 @@
     input[type="text"]:focus {
       border-color: var(--accent);
       background: #FFFFFF;
-      box-shadow: 0 0 0 3px rgba(176, 93, 93, 0.12);
+      box-shadow: 0 0 0 3px rgba(178, 88, 88, 0.12);
     }
 
     button {
@@ -155,13 +154,13 @@
       font-weight: 500;
       font-family: inherit;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(176, 93, 93, 0.25);
+      box-shadow: 0 4px 14px rgba(178, 88, 88, 0.25);
       transition: transform 0.1s ease, background 0.2s ease;
     }
 
     button:active {
       transform: scale(0.98);
-      background-color: #9c4f4f;
+      background-color: #9d4848;
     }
 
     .error-msg {
@@ -177,7 +176,6 @@
       opacity: 1;
     }
 
-    /* Pantalla final */
     .final-screen {
       display: none;
     }
@@ -197,10 +195,11 @@
       background: var(--accent-soft);
       border: 1px dashed var(--accent);
       border-radius: 16px;
-      padding: 18px;
+      padding: 20px 16px;
       font-size: 1.05rem;
       font-weight: 500;
       color: var(--accent);
+      line-height: 1.5;
     }
 
     @keyframes fadeIn {
@@ -213,29 +212,23 @@
 
   <div class="container">
     <div class="card" id="game-card">
-      
-      <!-- Barra de progreso -->
       <div class="progress-bar" id="progress-bar"></div>
-
       <span class="step-tag" id="step-tag">Paso 1 de 4</span>
-      <h2 id="stage-title">Adivinanza</h2>
+      <h2 id="stage-title"></h2>
       <p class="riddle-text" id="riddle-text"></p>
-
       <div class="clue-box" id="clue-box"></div>
 
       <div class="input-group">
-        <input type="text" id="answer-input" placeholder="Escribe tu respuesta aquí..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <input type="text" id="answer-input" placeholder="Escribe tu respuesta..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <button id="submit-btn" onclick="checkAnswer()">Continuar</button>
       </div>
       <div class="error-msg" id="error-msg"></div>
-
     </div>
 
-    <!-- Pantalla de victoria / Regalo -->
     <div class="card final-screen" id="final-card">
       <div style="font-size: 2.2rem; margin-bottom: 12px;">🤍</div>
       <h1>¡Llegaste al final!</h1>
-      <p>Has superado todas las pistas recordando cada momento. Tu recompensa te espera ahora mismo:</p>
+      <p>Has superado cada recuerdo de nuestra ruta. Tu sorpresa te espera ahora mismo:</p>
       
       <div class="location-highlight">
         🖼️ Mira detrás del cuadro de tu primera comunión
@@ -244,49 +237,55 @@
   </div>
 
   <script>
-    // ----------------------------------------------------
-    // CONFIGURACIÓN DE LAS POSTAS
-    // ----------------------------------------------------
     const stages = [
       {
-        title: "El comienzo",
+        title: "El origen",
         riddle: "No hizo falta firmar ningún tratado, pero allí se negociaron los primeros nervios. Introduce cómo le llamamos al sitio donde empezó todo.",
         clue: "La mesa cojeaba un poco.",
-        // Añade aquí todas las formas válidas en las que le llamáis:
-        answers: ["bar ejemplo", "el bar de siempre", "cafeteria"]
+        answers: ["irlandes", "el irlandes"]
       },
       {
         title: "La escapada",
-        riddle: "Muchos kilómetros, una lista de reproducción en bucle y la prueba definitiva de que sobrevivimos a convivir fuera de nuestra zona de confort. Introduce la ciudad que conquistamos juntos.",
+        riddle: "Muchos kilómetros, una lista de reproducción en bucle y la prueba definitiva de convivir fuera de nuestra zona de confort. Introduce la ciudad que conquistamos juntos.",
         clue: null,
-        // Cambia por la ciudad real del viaje:
-        answers: ["madrid", "granada", "valencia"]
+        answers: ["toledo"]
       },
       {
         title: "La confesión",
-        riddle: "El escenario de aquella anécdota mítica donde la sinceridad superó los límites al decirles a tus padres que ibas a dormir sin pijama conmigo. ¿Qué lugar fue?",
+        riddle: "Aquella mítica anécdota donde la sinceridad superó con creces los límites frente a tus padres al decirles que ibas a dormir conmigo...",
         clue: null,
-        // Cambia por el lugar donde ocurrió:
-        answers: ["tu casa", "mi habitacion", "el hotel"]
+        answers: [
+          "no necesito pijama", 
+          "no me hace falta pijama", 
+          "sin pijama", 
+          "dormir sin pijama", 
+          "no hace falta pijama"
+        ]
       },
       {
         title: "El rincón clave",
-        riddle: "Ese punto icónico frente al monumento más imponente de la ciudad, en su plaza. ¿Cuál es ese lugar?",
+        riddle: "Ese punto icónico frente al monumento más imponente de la ciudad y su plaza. ¿Cuál es ese lugar?",
         clue: null,
-        // Respuestas válidas para la catedral/plaza:
-        answers: ["catedral", "la catedral", "plaza de la catedral", "plaza cardenal belluga", "belluga"]
+        answers: [
+          "catedral", 
+          "la catedral", 
+          "plaza de la catedral", 
+          "plaza cardenal belluga", 
+          "plaza belluga", 
+          "belluga"
+        ]
       }
     ];
 
     let currentStage = 0;
     let failedAttempts = 0;
 
-    // Normaliza el texto quitando tildes, signos y mayúsculas
     function normalize(str) {
       return str
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
         .trim();
     }
 
@@ -318,7 +317,6 @@
       document.getElementById("error-msg").classList.remove("show");
       failedAttempts = 0;
 
-      // Actualizar puntos de progreso
       stages.forEach((_, i) => {
         const dot = document.getElementById(`dot-${i}`);
         if (dot) {
@@ -339,13 +337,14 @@
         return;
       }
 
-      // Validar si coincide con alguna de las respuestas configuradas
-      const isCorrect = stage.answers.some(ans => normalize(ans) === userText || userText.includes(normalize(ans)));
+      const isCorrect = stage.answers.some(ans => {
+        const normAns = normalize(ans);
+        return userText === normAns || userText.includes(normAns);
+      });
 
       if (isCorrect) {
         currentStage++;
         if (currentStage >= stages.length) {
-          // Fin del juego -> Mostrar pantalla del regalo
           document.getElementById("game-card").style.display = "none";
           document.getElementById("final-card").style.display = "block";
         } else {
@@ -356,7 +355,6 @@
         errorMsg.innerText = "Respuesta incorrecta, piénsalo bien...";
         errorMsg.classList.add("show");
 
-        // Si la posta tiene pista y falla al menos 2 veces, se muestra
         if (stage.clue && failedAttempts >= 2) {
           const clueBox = document.getElementById("clue-box");
           clueBox.innerText = `Pista: ${stage.clue}`;
@@ -365,14 +363,12 @@
       }
     }
 
-    // Permitir enviar pulsando 'Enter' en el teclado del móvil
     document.getElementById("answer-input").addEventListener("keypress", function(e) {
       if (e.key === "Enter") {
         checkAnswer();
       }
     });
 
-    // Iniciar
     initProgress();
     renderStage();
   </script>
