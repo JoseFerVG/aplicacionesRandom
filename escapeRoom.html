@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Una ruta especial ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAF7;
+      --card-bg: #FFFFFF;
+      --text-main: #2D2C2A;
+      --text-muted: #7A7875;
+      --accent: #B05D5D;
+      --accent-soft: #F7EDED;
+      --border: #EBEAE5;
+      --error: #C84B4B;
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .progress-bar {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .progress-dot {
+      width: 24px;
+      height: 4px;
+      background-color: var(--border);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .progress-dot.active {
+      background-color: var(--accent);
+      width: 32px;
+    }
+
+    .step-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 12px;
+      background: var(--accent-soft);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 500;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .riddle-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .clue-box {
+      font-size: 0.85rem;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin-top: -16px;
+      margin-bottom: 24px;
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .clue-box.visible {
+      display: block;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: var(--text-main);
+      background: #FAFAF7;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(176, 93, 93, 0.12);
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background-color: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(176, 93, 93, 0.25);
+      transition: transform 0.1s ease, background 0.2s ease;
+    }
+
+    button:active {
+      transform: scale(0.98);
+      background-color: #9c4f4f;
+    }
+
+    .error-msg {
+      font-size: 0.85rem;
+      color: var(--error);
+      margin-top: 10px;
+      min-height: 1.2em;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .error-msg.show {
+      opacity: 1;
+    }
+
+    /* Pantalla final */
+    .final-screen {
+      display: none;
+    }
+
+    .final-screen h1 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+
+    .final-screen p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .location-highlight {
+      background: var(--accent-soft);
+      border: 1px dashed var(--accent);
+      border-radius: 16px;
+      padding: 18px;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card" id="game-card">
+      
+      <!-- Barra de progreso -->
+      <div class="progress-bar" id="progress-bar"></div>
+
+      <span class="step-tag" id="step-tag">Paso 1 de 4</span>
+      <h2 id="stage-title">Adivinanza</h2>
+      <p class="riddle-text" id="riddle-text"></p>
+
+      <div class="clue-box" id="clue-box"></div>
+
+      <div class="input-group">
+        <input type="text" id="answer-input" placeholder="Escribe tu respuesta aquí..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button id="submit-btn" onclick="checkAnswer()">Continuar</button>
+      </div>
+      <div class="error-msg" id="error-msg"></div>
+
+    </div>
+
+    <!-- Pantalla de victoria / Regalo -->
+    <div class="card final-screen" id="final-card">
+      <div style="font-size: 2.2rem; margin-bottom: 12px;">🤍</div>
+      <h1>¡Llegaste al final!</h1>
+      <p>Has superado todas las pistas recordando cada momento. Tu recompensa te espera ahora mismo:</p>
+      
+      <div class="location-highlight">
+        🖼️ Mira detrás del cuadro de tu primera comunión
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ----------------------------------------------------
+    // CONFIGURACIÓN DE LAS POSTAS
+    // ----------------------------------------------------
+    const stages = [
+      {
+        title: "El comienzo",
+        riddle: "No hizo falta firmar ningún tratado, pero allí se negociaron los primeros nervios. Introduce cómo le llamamos al sitio donde empezó todo.",
+        clue: "La mesa cojeaba un poco.",
+        // Añade aquí todas las formas válidas en las que le llamáis:
+        answers: ["bar ejemplo", "el bar de siempre", "cafeteria"]
+      },
+      {
+        title: "La escapada",
+        riddle: "Muchos kilómetros, una lista de reproducción en bucle y la prueba definitiva de que sobrevivimos a convivir fuera de nuestra zona de confort. Introduce la ciudad que conquistamos juntos.",
+        clue: null,
+        // Cambia por la ciudad real del viaje:
+        answers: ["madrid", "granada", "valencia"]
+      },
+      {
+        title: "La confesión",
+        riddle: "El escenario de aquella anécdota mítica donde la sinceridad superó los límites al decirles a tus padres que ibas a dormir sin pijama conmigo. ¿Qué lugar fue?",
+        clue: null,
+        // Cambia por el lugar donde ocurrió:
+        answers: ["tu casa", "mi habitacion", "el hotel"]
+      },
+      {
+        title: "El rincón clave",
+        riddle: "Ese punto icónico frente al monumento más imponente de la ciudad, en su plaza. ¿Cuál es ese lugar?",
+        clue: null,
+        // Respuestas válidas para la catedral/plaza:
+        answers: ["catedral", "la catedral", "plaza de la catedral", "plaza cardenal belluga", "belluga"]
+      }
+    ];
+
+    let currentStage = 0;
+    let failedAttempts = 0;
+
+    // Normaliza el texto quitando tildes, signos y mayúsculas
+    function normalize(str) {
+      return str
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function initProgress() {
+      const bar = document.getElementById("progress-bar");
+      bar.innerHTML = "";
+      stages.forEach((_, i) => {
+        const dot = document.createElement("div");
+        dot.className = `progress-dot ${i === 0 ? 'active' : ''}`;
+        dot.id = `dot-${i}`;
+        bar.appendChild(dot);
+      });
+    }
+
+    function renderStage() {
+      const stage = stages[currentStage];
+      document.getElementById("step-tag").innerText = `Paso ${currentStage + 1} de ${stages.length}`;
+      document.getElementById("stage-title").innerText = stage.title;
+      document.getElementById("riddle-text").innerText = stage.riddle;
+      
+      const clueBox = document.getElementById("clue-box");
+      clueBox.classList.remove("visible");
+      clueBox.innerText = "";
+      
+      const input = document.getElementById("answer-input");
+      input.value = "";
+      input.focus();
+      
+      document.getElementById("error-msg").classList.remove("show");
+      failedAttempts = 0;
+
+      // Actualizar puntos de progreso
+      stages.forEach((_, i) => {
+        const dot = document.getElementById(`dot-${i}`);
+        if (dot) {
+          dot.className = `progress-dot ${i <= currentStage ? 'active' : ''}`;
+        }
+      });
+    }
+
+    function checkAnswer() {
+      const input = document.getElementById("answer-input");
+      const errorMsg = document.getElementById("error-msg");
+      const userText = normalize(input.value);
+      const stage = stages[currentStage];
+
+      if (!userText) {
+        errorMsg.innerText = "Escribe una respuesta para continuar.";
+        errorMsg.classList.add("show");
+        return;
+      }
+
+      // Validar si coincide con alguna de las respuestas configuradas
+      const isCorrect = stage.answers.some(ans => normalize(ans) === userText || userText.includes(normalize(ans)));
+
+      if (isCorrect) {
+        currentStage++;
+        if (currentStage >= stages.length) {
+          // Fin del juego -> Mostrar pantalla del regalo
+          document.getElementById("game-card").style.display = "none";
+          document.getElementById("final-card").style.display = "block";
+        } else {
+          renderStage();
+        }
+      } else {
+        failedAttempts++;
+        errorMsg.innerText = "Respuesta incorrecta, piénsalo bien...";
+        errorMsg.classList.add("show");
+
+        // Si la posta tiene pista y falla al menos 2 veces, se muestra
+        if (stage.clue && failedAttempts >= 2) {
+          const clueBox = document.getElementById("clue-box");
+          clueBox.innerText = `Pista: ${stage.clue}`;
+          clueBox.classList.add("visible");
+        }
+      }
+    }
+
+    // Permitir enviar pulsando 'Enter' en el teclado del móvil
+    document.getElementById("answer-input").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        checkAnswer();
+      }
+    });
+
+    // Iniciar
+    initProgress();
+    renderStage();
+  </script>
+</body>
+</html>
